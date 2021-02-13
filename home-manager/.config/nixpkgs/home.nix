@@ -93,14 +93,18 @@ in
         
         ;; Envrc and No-littering are set up here for control
         ;; over execution time.
-        (envrc-global-mode)
-        
-        ;; Do not dump autosave files into dirs,
-        ;; Save to dedicated cache. 
-        (setq auto-save-file-name-transforms
-          `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+        (envrc-global-mode)        
       '';
       usePackage = {
+        no-littering = {
+          enable = true;
+          config = ''
+             ;; Do not dump autosave files into dirs,
+             ;; Save to dedicated cache.
+             (setq auto-save-file-name-transforms
+               `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+          '';
+        };
         dracula-theme = {
           enable = true;
 	        config = ''
