@@ -54,6 +54,11 @@ in
     font = "Fira Code";
   };
 
+  programs.direnv = {
+    enable = true;
+    enableNixDirenvIntegration = true;
+  };
+
   # Emacs Config
   programs.emacs = {
     enable = true;
