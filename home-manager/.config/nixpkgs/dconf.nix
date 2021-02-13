@@ -25,6 +25,10 @@ in
       "report-technical-problems" = true;
     };
 
+    "org/gnome/desktop/wm/preferences" = {
+      "num-workspaces" = 3;
+    };
+
     "org/gnome/evolution-data-server" = {
       "migrated" = true;
       "network-monitor-gio-name" = "";
@@ -32,7 +36,7 @@ in
 
     "org/gnome/mutter" = {
       "attach-modal-dialogs" = true;
-      "dynamic-workspaces" = true;
+      "dynamic-workspaces" = false;
       "edge-tiling" = true;
       "focus-change-on-pointer-rest" = true;
       "workspaces-only-on-primary" = false;
