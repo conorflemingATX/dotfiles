@@ -23,6 +23,9 @@ in
     (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
   ];
 
+  # Enable lorri
+  services.lorri.enable = true;
+
   # Bash Config
   programs.bash = {
     enable = true;
@@ -50,10 +53,12 @@ in
     enable = true;
   };
 
+  # Set terminal font
   programs.gnome-terminal.profile.Default = {
     font = "Fira Code";
   };
 
+  # Enable Nix-direnv
   programs.direnv = {
     enable = true;
     enableNixDirenvIntegration = true;
@@ -62,62 +67,71 @@ in
   # Emacs Config
   programs.emacs = {
     enable = true;
-  };
+    extraPackages = epkgs: with epkgs; [
+      envrc
+      no-littering
+    ];
+    init = {
+      enable = true;
+      recommendedGcSettings = true;
+      prelude = ''
+        ;; Disable Startup message
+        (setq inhibit-startup-message t)
 
-  programs.emacs.init = {
-    enable = true;
-    recommendedGcSettings = true;
-    prelude = ''
-      ;; Disable Startup message
-      (setq inhibit-startup-message t)
-
-      ;; Clean up some visual cruft
-      (scroll-bar-mode -1)
-      (tool-bar-mode -1)
-      (tooltip-mode -1)
-      (set-fringe-mode 10)
-      (menu-bar-mode 10)
-      (column-number-mode)
-      (global-display-line-numbers-mode)
-    '';
-    usePackage = {
-      no-littering = {
-        enable = true;
-	config = ''
-	  (setq auto-save-file-name-transforms
-	    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-	'';
-      };
-      dracula-theme = {
-        enable = true;
-	config = ''
-	  (load-theme 'dracula t)
-	'';
-      };
-      ivy = {
-        enable = true;
-	bind = { "C-s" = "swiper"; };
-	bindLocal = {
-          ivy-minibuffer-map = {
-	    "TAB" = "ivy-alt-done";
-	    "C-n" = "ivy-next-line";
-	    "C-p" = "ivy-previous-line";
-	  };
-	  ivy-switch-buffer-map = {
-	    "C-n" = "ivy-next-line";
-	    "C-p" = "ivy-previous-line";	    
-	  };
+        ;; Clean up some visual cruft
+        (scroll-bar-mode -1)
+        (tool-bar-mode -1)
+        (tooltip-mode -1)
+        (set-fringe-mode 10)
+        (menu-bar-mode 10)
+        (column-number-mode)
+        (global-display-line-numbers-mode)
+        (global-visual-line-mode)
+        
+        ;; Load Packages from ExtraPackages above
+        (package-initialize)
+        
+        ;; Envrc and No-littering are set up here for control
+        ;; over execution time.
+        (envrc-global-mode)
+        
+        ;; Do not dump autosave files into dirs,
+        ;; Save to dedicated cache. 
+        (setq auto-save-file-name-transforms
+          `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+      '';
+      usePackage = {
+        dracula-theme = {
+          enable = true;
+	        config = ''
+	          (load-theme 'dracula t)
+	        '';
         };
-	config = ''
-	  (ivy-mode 1)
-	'';
-      };
-      nix-mode = {
-        enable = true;
-      };
-      org = {
-        enable = true;
-	package = epkgs: epkgs.org-plus-contrib;
+        ivy = {
+          enable = true;
+	        bind = { "C-s" = "swiper"; };
+	        bindLocal = {
+            ivy-minibuffer-map = {
+	            "TAB" = "ivy-alt-done";
+      	      "C-n" = "ivy-next-line";
+              "C-p" = "ivy-previous-line";
+	          };
+   	        ivy-switch-buffer-map = {
+	            "C-n" = "ivy-next-line";
+      	      "C-p" = "ivy-previous-line";	    
+	          };
+          };
+       	  config = ''
+       	    (ivy-mode 1)
+      	  '';
+        };
+        nix-mode = {
+          enable = true;
+        };
+        org = {
+          enable = true;
+       	  package = epkgs: epkgs.org-plus-contrib;
+        };
       };
     };
   };
