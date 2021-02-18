@@ -70,7 +70,7 @@ in
   # Emacs Config
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs26;
+#    package = pkags.emacs26;
     extraPackages = epkgs: with epkgs; with pkgs; [
       envrc
       no-littering
@@ -383,6 +383,12 @@ in
           enable = true;
           command = [ "haskell-doc-current-info" ];
         };
+
+#        fsharp-mode = {
+#          enable = true;
+#          after = [ "lsp-mode" ];
+#          hook = [ ''(fsharp-mode . lsp)'' ];
+#        };
 
         flycheck = {
           enable = true;
