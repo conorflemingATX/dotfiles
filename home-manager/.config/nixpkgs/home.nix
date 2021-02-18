@@ -29,9 +29,6 @@ in
     ripgrep
   ];
 
-  # Enable lorri
-#  services.lorri.enable = true;
-
   # Bash Config
   programs.bash = {
     enable = true;
@@ -73,10 +70,11 @@ in
   # Emacs Config
   programs.emacs = {
     enable = true;
-    extraPackages = epkgs: with epkgs; [
+    package = pkgs.emacs26;
+    extraPackages = epkgs: with epkgs; with pkgs; [
       envrc
       no-littering
-      pkgs.elixir-ls
+      elixir-ls
     ];
     init = {
       enable = true;
@@ -230,8 +228,8 @@ in
           };
           config = ''
             (setq lsp-ui-sideline-enable t
-                  lsp-ui-sideline-show-symbol nil
-                  lsp-ui-sideline-show-hover nil
+                  lsp-ui-sideline-show-symbol t
+                  lsp-ui-sideline-show-hover t
                   lsp-ui-sideline-show-code-actions nil
                   lsp-ui-sideline-update-mode 'point)
             (setq lsp-ui-doc-enable nil
@@ -297,6 +295,47 @@ in
                                (add-hook 'before-save-hook 'elixir-format nil t)
                                (lsp)))"
           ];
+        };
+
+        tuareg = {
+          enable = true;
+          # I am not at all sure about this...
+          init = ''
+            (defun in-nix-shell-p ()
+              (string-equal (getenv "IN_NIX_SHELL") "1"))
+
+            (setq conor/merlin-site-eslisp (getenv "MERLIN_SITE_LISP"))
+            (setq conor/utop-site-elisp (getenv "UTOP_SITE_LISP"))
+            (setq conor/ocp-site-elisp (getenv "OCP_INDENT_SITE_LISP"))
+          '';
+          # I am calling these inline in the tuareg entry
+          # instead of giving them their own entries
+          # because the usePackage thing does not have if or loadPath
+          # It's difficult to get it to use emacs start-time env vars.
+          hook = [ ''(tuareg-mode . lsp)'' ];
+        };
+
+        utop = {
+          enable = true;
+          hook = [ ''(tuareg-mode . utop-minor-mode)'' ];
+          config = ''
+            (setq utop-command "utop -emacs")
+          '';
+        };
+
+        merlin = {
+          enable = true;
+          hook = [
+            ''(tuareg-mode . merlin-mode)''
+            ''(merlin-mode . company-mode)''
+          ];
+          config = ''
+            (customize-set-variable 'merlin-command "ocamlmerlin")
+          '';
+        };
+
+        ocp-indent = {
+          enable = true;
         };
 
         haskell-mode = {
