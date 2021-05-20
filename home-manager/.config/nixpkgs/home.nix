@@ -34,6 +34,7 @@ in
     enable = true;
     shellAliases = {
       emacs = "emacs -nw";
+      code = "codium";
     };
     bashrcExtra = ''
        eval `dircolors ~/.dir_colors/`
@@ -70,7 +71,6 @@ in
   # Emacs Config
   programs.emacs = {
     enable = true;
-#    package = pkags.emacs26;
     extraPackages = epkgs: with epkgs; with pkgs; [
       envrc
       no-littering
@@ -103,10 +103,6 @@ in
         (envrc-global-mode)        
       '';
       usePackage = {
-        project = {
-          enable = true;
-        };
-        
         no-littering = {
           enable = true;
           config = ''
@@ -384,12 +380,6 @@ in
           command = [ "haskell-doc-current-info" ];
         };
 
-#        fsharp-mode = {
-#          enable = true;
-#          after = [ "lsp-mode" ];
-#          hook = [ ''(fsharp-mode . lsp)'' ];
-#        };
-
         flycheck = {
           enable = true;
           diminish = [ "flycheck-mode" ];
@@ -441,6 +431,22 @@ in
       };
     };
   };
+
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscodium;
+    extensions = (with pkgs.vscode-extensions; [
+      bbenoist.Nix
+      ms-python.python
+    ]) ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [{
+      name = "remote-ssh-edit";
+      publisher = "ms-vscode-remote";
+      version = "0.47.2";
+      sha256 = "1hp6gjh4xp2m1xlm1jsdzxw9d8frkiidhph6nvl24d0h8z34w49g";
+    }];
+  };
+
+  programs.htop.enable = true;
 
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
