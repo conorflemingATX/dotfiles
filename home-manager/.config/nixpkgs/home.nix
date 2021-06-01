@@ -19,9 +19,15 @@ in
   home.username = "conor";
   home.homeDirectory = "/home/conor";
 
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (pkgs.lib.getName pkg) [
+      "spotify"
+      "spotify-unwrapped"
+    ];
+
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
     gnome3.gnome-tweak-tool
+    spotify
     dconf2nix
     (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
     fd
@@ -438,12 +444,32 @@ in
     extensions = (with pkgs.vscode-extensions; [
       bbenoist.Nix
       ms-python.python
-    ]) ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [{
-      name = "remote-ssh-edit";
-      publisher = "ms-vscode-remote";
-      version = "0.47.2";
-      sha256 = "1hp6gjh4xp2m1xlm1jsdzxw9d8frkiidhph6nvl24d0h8z34w49g";
-    }];
+    ]) ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+      {
+        name = "remote-ssh-edit";
+        publisher = "ms-vscode-remote";
+        version = "0.47.2";
+        sha256 = "1hp6gjh4xp2m1xlm1jsdzxw9d8frkiidhph6nvl24d0h8z34w49g";
+      }
+      {
+        name = "vscode-emacs-friendly";
+        publisher = "lfs";
+        version = "0.9.0";
+        sha256 = "1j4cy77m1077wdl2vvpmzi98y3jkycvf8z84pscs3lkkk1mvcsv1";
+      }
+      {
+        name = "csharp";
+        publisher = "ms-dotnettools";
+        version = "1.23.11";
+        sha256 = "0i099xvwls2y18bwn9wc0nsq62xb8ynmz6wh4nc8yxmb62x25k59";
+      }
+      {
+        name = "Ionide-fsharp";
+        publisher = "Ionide";
+        version = "5.5.5";
+        sha256 = "0nyi07xs7izynp2llhkqgz4i5j8gkpxy0gs934n9sm6rhs44vc66";
+      }
+    ];
   };
 
   programs.htop.enable = true;
